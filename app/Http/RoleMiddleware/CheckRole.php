@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 /**
  * =====================================================
- * MIDDLEWARE: CheckRole
+ * Role Middleware: CheckRole
  * =====================================================
  * Memverifikasi role pengguna sebelum mengakses halaman.
  * 

@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="no-copy">
-    {{-- Hero Section --}}
+    <!-- Hero section/cerita di atas/cerita populer -->
     @if($featuredStory)
     <section class="hero-section">
         <div class="hero-content">
@@ -19,7 +19,7 @@
         </div>
     </section>
 
-    {{-- Chapter Terbaru dari Cerita Utama --}}
+    <!-- Chapter Terbaru dari Cerita Utama -->
     <section class="main-story-chapters container">
         <div class="section-header">
             <h2>Chapter Terbaru</h2>
@@ -38,14 +38,14 @@
     </section>
     @endif
 
-    {{-- Rekomendasi Cerita --}}
+    <!-- Rekomendasi Cerita -->
     <section class="explore-section container">
         <div class="section-header">
             <h2>Rekomendasi Cerita</h2>
             <a href="{{ route('explore') }}" class="view-all">Lihat Semua</a>
         </div>
 
-        {{-- Genre Filters --}}
+        <!-- Genre Filters -->
         <div class="genre-filters">
             <a href="{{ route('home') }}" class="genre-pill active">Semua</a>
             @foreach($genres as $genre)
@@ -53,7 +53,7 @@
             @endforeach
         </div>
 
-        {{-- Story Cards --}}
+        <!-- Story Cards -->
         <div class="profiles-grid">
             @forelse($stories as $story)
                 <a href="{{ route('story.show', $story->id) }}" class="story-card" style="animation:fadeInUp 0.5s ease forwards {{ ($loop->index % 6) * 0.1 }}s;opacity:0">

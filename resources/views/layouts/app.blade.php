@@ -11,7 +11,7 @@
 </head>
 <body class="light-theme">
 
-    {{-- Toast Notifications --}}
+    <!-- Toast Notifications -->
     @if(session('success'))
         <div class="toast toast-success" id="toast">{{ session('success') }}</div>
     @endif

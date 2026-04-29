@@ -4,6 +4,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Story extends Model
@@ -66,18 +67,18 @@ class Story extends Model
     // daftar fav
     public function favorites()
     {
-        return $this->hashMany(Favorite::class);
+        return $this->hasMany(Favorite::class);
     }
 
     // daftar like
     public function likes()
     {
-        return $this->hashMany(Like::class);
+        return $this->hasMany(Like::class);
     }
 
     // riwayat bacaan cerita ini
     public function readingHistories()
     {
-        return $this->hashMany(ReadingHistory::class);
+        return $this->hasMany(ReadingHistory::class);
     }
 }
