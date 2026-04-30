@@ -70,7 +70,7 @@
                     </div>
                 </a>
             @empty
-                <div class="empty-state" style="grid-column:1/-1">
+                <div class="empty-state" style="grid-column:-1/1">
                     <i class="fa-solid fa-book-open"></i>
                     <p>Belum ada cerita tersedia.</p>
                 </div>
