@@ -7,6 +7,8 @@
     <title>@yield('title', 'Ceritaku - Platform Cerita Digital')</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    {{-- dashboard.css dipake buat styling live search dropdown di navbar --}}
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     @stack('styles')
 </head>
 <body class="light-theme">
@@ -42,19 +44,34 @@
             </ul>
         </nav>
         <div class="nav-actions">
-            <form action="{{ route('search') }}" method="GET" class="search-bar">
-                <input type="text" name="q" placeholder="Cari cerita favoritmu..." value="{{ request('q') }}">
+            {{-- search bar + live search dropdown --}}
+            <form action="{{ route('search') }}" method="GET" class="search-bar" id="navbar-search-form">
+                <input type="text" name="q" placeholder="Cari cerita favoritmu..." value="{{ request('q') }}" id="navbar-search-input" autocomplete="off">
                 <button type="submit"><i class="fa-solid fa-search"></i></button>
+                {{-- dropdown live search — muncul pas user ngetik --}}
+                <div class="live-search-results" id="navbar-search-results"></div>
             </form>
             <button id="theme-toggle" class="theme-btn desktop-only" aria-label="Toggle Theme">
                 <i class="fa-solid fa-moon"></i>
             </button>
             @auth
+                <button class="nav-bell desktop-only" aria-label="Notifikasi">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="bell-badge"></span>
+                </button>
                 <div class="nav-user-menu desktop-only">
                     <div class="user-profile">
                         <img src="{{ asset(auth()->user()->avatar ?? 'img/p2.jpg') }}" alt="Profile">
                     </div>
                     <div class="nav-user-dropdown">
+                        <div class="dropdown-user-info">
+                            <img src="{{ asset(auth()->user()->avatar ?? 'img/p2.jpg') }}" alt="Profile">
+                            <div>
+                                <div class="user-name">{{ auth()->user()->name }}</div>
+                                <div class="user-role">{{ auth()->user()->role }}</div>
+                            </div>
+                        </div>
+                        <div class="divider"></div>
                         <a href="{{ route('dashboard') }}"><i class="fa-solid fa-gauge"></i> Dashboard</a>
                         <a href="{{ route('profile.edit') }}"><i class="fa-solid fa-user-gear"></i> Profil</a>
                         <div class="divider"></div>
@@ -133,7 +150,7 @@
             </div>
         </div>
         <div class="copyright">
-            <p>&copy; {{ date('Y') }} Ceritaku. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} Ceritaku. Apa Peduli Gweh.</p>
         </div>
     </footer>
 
@@ -221,6 +238,86 @@
 
         // Auto-remove toast
         setTimeout(() => { const t = document.getElementById('toast'); if(t) t.remove(); }, 5000);
+
+        // --- LIVE SEARCH NAVBAR ---
+        // fitur search real-time: pas user ngetik, hasil langsung muncul
+        // di dropdown bawah input, tanpa perlu klik Enter
+        (function() {
+            const input = document.getElementById('navbar-search-input');     // input search
+            const results = document.getElementById('navbar-search-results'); // dropdown hasil
+            let debounceTimer; // timer buat debounce (gak spam request)
+
+            // kalo input gak ada (misal di halaman dashboard), skip aja
+            if (!input || !results) return;
+
+            // event: tiap kali user ngetik
+            input.addEventListener('input', function() {
+                const keyword = this.value.trim();
+
+                // kalo keyword kosong atau cuma 1 huruf, sembunyiin dropdown
+                if (keyword.length < 1) {
+                    results.style.display = 'none';
+                    results.innerHTML = '';
+                    return;
+                }
+
+                // debounce 300ms — biar gak kirim request tiap huruf
+                // nunggu user berhenti ngetik dulu baru kirim
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    // fetch ke API endpoint
+                    fetch('/api/search-stories?q=' + encodeURIComponent(keyword))
+                        .then(res => res.json())
+                        .then(data => {
+                            // kalo ada hasil, bikin HTML item-itemnya
+                            if (data.length > 0) {
+                                results.innerHTML = data.map(story => `
+                                    <a href="/story/${story.id}" class="search-item">
+                                        <img src="/${story.cover_image || 'img/p2.jpg'}" alt="">
+                                        <div class="search-item-info">
+                                            <strong>${story.title}</strong>
+                                            <small>${story.genre || ''}</small>
+                                        </div>
+                                    </a>
+                                `).join('');
+                            } else {
+                                // gak ada hasil? kasih pesan
+                                results.innerHTML = '<div class="search-empty">Cerita gak ketemu nih 😕</div>';
+                            }
+                            // tampilin dropdown
+                            results.style.display = 'block';
+                        })
+                        .catch(() => {
+                            // error? sembunyiin aja
+                            results.style.display = 'none';
+                        });
+                }, 300); // 300ms debounce
+            });
+
+            // klik di luar search: sembunyiin dropdown
+            document.addEventListener('click', function(e) {
+                if (!input.contains(e.target) && !results.contains(e.target)) {
+                    results.style.display = 'none';
+                }
+            });
+
+            // fokus input: kalo ada isi, tampilin dropdown lagi
+            input.addEventListener('focus', function() {
+                if (results.innerHTML && this.value.trim().length >= 1) {
+                    results.style.display = 'block';
+                }
+            });
+        })();
+
+        // --- NAVBAR SCROLL EFFECT ---
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('main-navbar');
+            if (window.scrollY > 10) {
+                navbar.classList.add('navbar-scrolled');
+            } else {
+                navbar.classList.remove('navbar-scrolled');
+            }
+        });
     </script>
     @stack('scripts')
 </body>

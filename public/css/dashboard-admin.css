@@ -1,0 +1,21 @@
+/* =====================================================
+   CSS DASHBOARD ADMIN: dashboard-admin.css
+   =====================================================
+   Styling khusus untuk dashboard Admin.
+   Warna aksen: Blue untuk membedakan dari author.
+   ===================================================== */
+
+.admin-dashboard .stat-card {
+    border-left: 3px solid var(--info);
+}
+
+.dash-sidebar-user .role-badge-admin {
+    background: rgba(49, 130, 206, 0.15);
+    color: var(--info);
+    padding: 0.15rem 0.6rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}

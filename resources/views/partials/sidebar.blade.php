@@ -26,7 +26,7 @@
         </button>
         @auth
             <a href="{{ route('dashboard') }}" class="sidebar-profile">
-                <img src="{{ asset(auth()->user()->avatar ?? 'img/p2.jpg') }}" alt="Profile">
+                <img src="{{ asset(auth()->user()->avatar ?? 'img/profile.jpeg') }}" alt="Profile">
                 <span>{{ auth()->user()->name }}</span>
             </a>
         @else

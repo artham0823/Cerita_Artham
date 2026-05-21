@@ -1,0 +1,879 @@
+/* =====================================================
+   CSS DASHBOARD: dashboard.css (Base/Shared)
+   =====================================================
+   Yo! Ini file CSS utama buat dashboard.
+   Isinya styling dasar yang dipake SEMUA role:
+   author, admin, sama member.
+   
+   Styling khusus tiap role ada di file terpisah:
+   - dashboard-author.css (buat author, warna orange)
+   - dashboard-admin.css (buat admin, warna biru)
+   - dashboard-member.css (buat member, warna ijo)
+   
+   Fitur yg dicover disini:
+   - Layout sidebar + konten
+   - Stats grid (kartu statistik)
+   - Tabel dashboard (responsive jadi card di HP)
+   - Cards, Forms, Modal
+   - Live Search dropdown
+   - Responsive breakpoints (tablet, mobile, small mobile)
+   ===================================================== */
+
+.dash-layout {
+    display: block;
+    min-height: 100vh;
+}
+
+/* Dashboard Sidebar */
+.dash-sidebar {
+    width: 260px;
+    background: var(--bg-card);
+    border-left: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    z-index: 100;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.35s ease;
+}
+
+.dash-sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dash-sidebar-header .logo {
+    font-size: 1.3rem;
+}
+
+.dash-sidebar-user {
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dash-sidebar-user img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary-color);
+    flex-shrink: 0;
+}
+
+.dash-sidebar-user .user-info h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.dash-sidebar-user .user-info span {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: capitalize;
+}
+
+.dash-sidebar-nav {
+    flex: 1;
+    padding: 1rem 0;
+    overflow-y: auto;
+}
+
+.dash-sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.8rem 1.5rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    color: var(--text-main);
+    text-decoration: none;
+    border-left: 3px solid transparent;
+}
+
+.dash-sidebar-nav a:hover {
+    background-color: var(--bg-accent);
+    color: var(--primary-color);
+}
+
+.dash-sidebar-nav a.active {
+    color: var(--primary-color);
+    background-color: var(--primary-glow);
+    border-left-color: var(--primary-color);
+    font-weight: 600;
+}
+
+.dash-sidebar-nav a i {
+    width: 20px;
+    text-align: center;
+}
+
+.dash-sidebar-nav .nav-section {
+    padding: 0.5rem 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-top: 1rem;
+}
+
+.dash-sidebar-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Sidebar Overlay (for closing sidebar when clicking outside on mobile) */
+.dash-sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0);
+    z-index: 95;
+    visibility: hidden;
+    opacity: 0;
+    transition: background 0.35s ease,
+                visibility 0.35s ease,
+                opacity 0.35s ease;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 768px) {
+    .dash-sidebar-overlay.active {
+        visibility: visible;
+        opacity: 1;
+        background: rgba(0, 0, 0, 0.45);
+    }
+}
+
+/* Dashboard Content */
+.dash-content {
+    flex: 1;
+    margin-right: 260px;
+    padding: 2rem;
+    min-height: 100vh;
+    transition: margin-right 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                padding 0.35s ease;
+}
+
+.dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.dash-header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    transition: font-size 0.3s ease;
+    word-break: break-word;
+}
+
+.dash-header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-top: 0.3rem;
+}
+
+/* Stats Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    transition: gap 0.3s ease;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s ease,
+                padding 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+}
+
+.stat-card .stat-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    background: var(--primary-glow);
+    color: var(--primary-color);
+    transition: width 0.3s ease, height 0.3s ease, font-size 0.3s ease;
+}
+
+.stat-card .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-main);
+    transition: font-size 0.3s ease;
+}
+
+.stat-card .stat-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+    transition: font-size 0.3s ease;
+}
+
+/* Analisis Data Charts Grid */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.charts-grid > * {
+    min-width: 0;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* Dashboard Table */
+.dash-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.dash-table th, .dash-table td {
+    padding: 0.8rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.95rem;
+}
+
+.dash-table th {
+    background: var(--bg-accent);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+.dash-table tr:hover td {
+    background: var(--bg-accent);
+}
+
+.dash-table .actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.dash-table .actions a, .dash-table .actions button {
+    padding: 0.3rem 0.7rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    font-family: 'Outfit', sans-serif;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.dash-table .btn-edit {
+    background: var(--primary-glow);
+    color: var(--primary-color);
+}
+
+.dash-table .btn-edit:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.dash-table .btn-delete {
+    background: rgba(229, 62, 62, 0.1);
+    color: var(--danger);
+}
+
+.dash-table .btn-delete:hover {
+    background: var(--danger);
+    color: white;
+}
+
+/* Dashboard Card */
+.dash-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: padding 0.3s ease;
+}
+
+.dash-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+    transition: font-size 0.3s ease;
+}
+
+/* Comment items in dashboard */
+.comment-item {
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+}
+
+.comment-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.comment-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.comment-text {
+    word-break: break-word;
+}
+
+/* Member dashboard 2-column grid */
+.member-bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* Form in Dashboard */
+.dash-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.dash-form label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.dash-form input, .dash-form select, .dash-form textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: var(--transition);
+}
+
+.dash-form input:focus, .dash-form select:focus, .dash-form textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.dash-form textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.dash-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.dash-form .form-hint {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+}
+
+.dash-form .form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dash-form .form-check input[type="checkbox"] {
+    width: auto;
+    accent-color: var(--primary-color);
+}
+
+/* Status Badge */
+.status-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-pending {
+    background: rgba(214, 158, 46, 0.1);
+    color: var(--warning);
+}
+
+.status-approved {
+    background: rgba(56, 161, 105, 0.1);
+    color: var(--success);
+}
+
+.status-rejected {
+    background: rgba(229, 62, 62, 0.1);
+    color: var(--danger);
+}
+
+.status-blocked {
+    background: rgba(229, 62, 62, 0.1);
+    color: var(--danger);
+}
+
+.status-active {
+    background: rgba(56, 161, 105, 0.1);
+    color: var(--success);
+}
+
+/* Modal */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-backdrop.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: var(--shadow-md);
+}
+
+.modal-content h3 {
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+}
+
+/* Mobile menu toggle for dashboard */
+.dash-mobile-toggle {
+    display: none;
+    position: fixed;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    z-index: 110;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                background 0.3s ease,
+                box-shadow 0.3s ease;
+    align-items: center;
+    justify-content: center;
+}
+
+.dash-mobile-toggle:hover {
+    transform: scale(1.1);
+}
+
+.dash-mobile-toggle:active {
+    transform: scale(0.95);
+}
+
+/* =====================================================
+   TABLET BREAKPOINT (769px - 1024px)
+   Smooth transition zone between desktop and mobile
+   ===================================================== */
+@media (max-width: 1024px) {
+    .dash-sidebar {
+        width: 220px;
+    }
+
+    .dash-content {
+        margin-right: 220px;
+        padding: 1.5rem;
+    }
+
+    .dash-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .stat-card {
+        padding: 1.2rem;
+    }
+
+    .stat-card .stat-value {
+        font-size: 1.6rem;
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .chart-container {
+        height: 260px;
+    }
+
+    .member-bottom-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+/* =====================================================
+   MOBILE BREAKPOINT (max-width: 768px)
+   Full mobile layout
+   ===================================================== */
+@media (max-width: 768px) {
+    .dash-sidebar {
+        transform: translateX(100%);
+        width: 260px;
+        box-shadow: none;
+    }
+
+    .dash-sidebar.active {
+        transform: translateX(0);
+        box-shadow: -4px 0 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .dash-content {
+        margin-right: 0;
+        padding: 1rem;
+        padding-bottom: 5rem; /* space for toggle button */
+    }
+
+    .dash-header {
+        margin-bottom: 1.2rem;
+        padding-bottom: 1rem;
+    }
+
+    .dash-header h1 {
+        font-size: 1.2rem;
+    }
+
+    .dash-header p {
+        font-size: 0.85rem;
+    }
+
+    /* Stats grid: 2 per row on mobile */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    .stat-card {
+        padding: 1rem;
+    }
+
+    .stat-card .stat-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .stat-card .stat-value {
+        font-size: 1.4rem;
+    }
+
+    .stat-card .stat-label {
+        font-size: 0.78rem;
+    }
+
+    /* Charts: stack vertically */
+    .charts-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .chart-container {
+        height: 220px;
+    }
+
+    /* Dashboard cards */
+    .dash-card {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .dash-card h3 {
+        font-size: 1.05rem;
+        margin-bottom: 0.75rem;
+    }
+
+    /* Member bottom grid: stack vertically */
+    .member-bottom-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    /* Comment items */
+    .comment-avatar {
+        width: 30px;
+        height: 30px;
+    }
+
+    /* Tables on mobile */
+    .dash-table {
+        font-size: 0.9rem;
+    }
+
+    .dash-table thead {
+        display: none;
+    }
+
+    .dash-table tr {
+        display: block;
+        margin-bottom: 1rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-sm);
+        padding: 0.5rem;
+    }
+
+    .dash-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.7rem 0.5rem;
+        border-bottom: 1px solid var(--border-color);
+        text-align: right;
+    }
+
+    .dash-table td:last-child {
+        border-bottom: none;
+    }
+
+    .dash-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        margin-right: 1rem;
+        text-align: left;
+    }
+
+    .dash-table .actions {
+        width: 100%;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+
+    /* Show mobile toggle */
+    .dash-mobile-toggle {
+        display: flex;
+    }
+}
+
+/* =====================================================
+   SMALL MOBILE BREAKPOINT (max-width: 480px)
+   Extra-small screens
+   ===================================================== */
+@media (max-width: 480px) {
+    .dash-sidebar {
+        width: 240px;
+    }
+
+    .dash-content {
+        padding: 0.75rem;
+        padding-bottom: 5rem;
+    }
+
+    .dash-header h1 {
+        font-size: 1.05rem;
+    }
+
+    .dash-header p {
+        font-size: 0.8rem;
+    }
+
+    .stats-grid {
+        gap: 0.5rem;
+    }
+
+    .stat-card {
+        padding: 0.8rem;
+    }
+
+    .stat-card .stat-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-card .stat-value {
+        font-size: 1.2rem;
+    }
+
+    .stat-card .stat-label {
+        font-size: 0.72rem;
+    }
+
+    .chart-container {
+        height: 180px;
+    }
+
+    .dash-card {
+        padding: 0.8rem;
+    }
+
+    .dash-card h3 {
+        font-size: 0.95rem;
+    }
+
+    .dash-mobile-toggle {
+        width: 44px;
+        height: 44px;
+        bottom: 1rem;
+        left: 1rem;
+        font-size: 1.1rem;
+    }
+}
+
+/* =====================================================
+   LIVE SEARCH DROPDOWN
+   =====================================================
+   Fitur search real-time — waktu user ngetik, hasilnya
+   langsung nongol di dropdown bawah input. 
+   ===================================================== */
+
+/* container dropdown search — posisinya absolute di bawah input */
+.live-search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+    max-height: 300px;
+    overflow-y: auto; /* bisa scroll kalo hasilnya banyak */
+    z-index: 200;
+    display: none; /* default: sembunyi */
+}
+
+/* wrapper search bar biar bisa pake position relative */
+.search-bar {
+    position: relative;
+}
+
+/* tiap item hasil search — cover mini + info cerita */
+.live-search-results .search-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.8rem 1rem;
+    text-decoration: none;
+    color: var(--text-main);
+    transition: var(--transition);
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* hover: warna bg berubah + teks orange */
+.live-search-results .search-item:hover {
+    background: var(--bg-accent);
+    color: var(--primary-color);
+}
+
+/* gambar cover mini di search result */
+.live-search-results .search-item img {
+    width: 35px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+/* info teks di search result */
+.live-search-results .search-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+/* judul cerita — satu baris aja, lebihnya dipotong */
+.live-search-results .search-item-info strong {
+    display: block;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* genre kecil di bawah judul */
+.live-search-results .search-item-info small {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* pesan kalo gak ada hasil */
+.live-search-results .search-empty {
+    padding: 1rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
